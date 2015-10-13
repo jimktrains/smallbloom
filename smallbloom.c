@@ -22,7 +22,7 @@ uint8_t *filter;
 
 #define BF_ITER 4
 
-void add(uint8_t *d, size_t dlen)
+void bfadd(uint8_t *d, size_t dlen)
 {
   uint8_t r = 0;
   uint8_t bit;
@@ -39,7 +39,7 @@ void add(uint8_t *d, size_t dlen)
   }
 }
 
-uint8_t check(uint8_t *d, size_t dlen)
+uint8_t bfcheck(uint8_t *d, size_t dlen)
 {
   uint8_t cnt = 0;
   uint8_t r = 0;
@@ -105,13 +105,13 @@ int main()
   };
   filter = (uint8_t *) malloc(FILTER_LENGTH_BYTES);
 
-  uint8_t start = 16, end = 24;
+  uint8_t start = 16, end = 36;
   for(uint8_t i = start; i < end; i++)
   {
     printf("Adding ");
-    add(devices[i], 5);
+    bfadd(devices[i], 5);
     print_did(devices[i]);
-    printf(" %s\n", check(devices[i], 5) ? "YES" : "NO");
+    printf(" %s\n", bfcheck(devices[i], 5) ? "YES" : "NO");
   }
 
   uint16_t cnt_pos = 0;
@@ -122,7 +122,7 @@ int main()
     for(uint8_t j = 0; j < 5; j++)
     {
       cnt++;
-      c = check(devices[i]+j, 5);
+      c = bfcheck(devices[i]+j, 5);
       if (c == 1)
       {
         cnt_pos++;
@@ -136,7 +136,7 @@ int main()
     for(uint8_t j = 0; j < 5; j++)
     {
       cnt++;
-      c = check(devices[i]+j, 5);
+      c = bfcheck(devices[i]+j, 5);
       if (c == 1)
       {
         cnt_pos++;
