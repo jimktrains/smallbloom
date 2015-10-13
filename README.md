@@ -11,18 +11,22 @@ Example output:
     All Tested: 245
     False Positives: 0
 
-Unfortunatly there are some cases where similar values collide.  This is
-much more undesirable than random ones colliding.
+There are some collisions, but they're not for contigigous values and under
+1% even upwards of 11 entries in the table
 
-    Adding c43c22ac92 YES
-    Adding c43c22ac93 YES
-    Adding c43c22ac94 YES
-    Adding c43c22ac95 YES
-    Adding c43c22ac96 YES
-    c43c22ac97 YES
-    c43c22aca7 YES
-    c43c22acb7 YES
-    c43c22acc7 YES
-    All Tested: 245
-    False Positives: 4
+    Adding 0c3d54d712 YES
+    Adding 0c3d54f754 YES
+    Adding 0c3d54ee14 YES
+    Adding 0c3d54d713 YES
+    Adding 0c3d54d714 YES
+    Adding 0c3d54fe14 YES
+    Adding d7b95ebbe7 YES
+    Adding 3f39e6ebd3 YES
+    Adding 3f39e6ebde YES
+    Adding 3f39e6ebff YES
+    Adding 3f34e6ebdf YES
+    774f35e666 YES
+    91e14ae313 YES
+    All Tested: 215
+    False Positives: 2
 

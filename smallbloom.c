@@ -4,11 +4,18 @@
 
 uint8_t *bfilter;
 
+#define FNV_PRIME 16777619
+#define FNV_BIAS 2166136261
 
-/* RS Galois Field
- * x^8 + x^4 + x^3 + x^2 + 1
- */
-#define LFSR(c) ((( (c) << 1) ^ (((c) & 0x80) ? 0x1d : 0)) % 256)
+uint32_t fnv_init() { return FNV_BIAS; }
+uint32_t fnv_add(uint32_t hash, uint8_t val)
+{
+  hash = hash ^ val;
+  hash = hash * FNV_PRIME;
+  return hash;
+}
+uint32_t fnv_finalize(uint32_t hash) { return hash; }
+
 #define FILTER_LENGTH_BYTES 14
 /* Should be a prime
  *   2      3      5      7     11     13     17     19     23     29
@@ -24,16 +31,14 @@ uint8_t *bfilter;
 
 void bfadd(uint8_t *d, size_t dlen)
 {
-  uint8_t r = 0;
+  uint8_t r = fnv_init();
   uint8_t bit;
   uint8_t byte;
   for(uint8_t i = 0; i < BF_ITER; i++)
   {
-    for(uint8_t j = dlen-1; j > 0; j--)
-      r = LFSR(r ^ d[i]);
-    r = r ^ d[0];
-    bit = r % FILTER_LENGTH_BITS;
-    //printf("%02x-%02x ", byte,bit);
+    for(uint8_t j = 0; j < dlen; j++) { r = fnv_add(r, d[j]); }
+    bit = fnv_finalize(r) % FILTER_LENGTH_BITS;
+    // printf("%02x-%02x ", byte,bit);
     byte = bit / 8;
     bit = bit % 8;
     bfilter[byte] |= (1 << bit);
@@ -43,15 +48,14 @@ void bfadd(uint8_t *d, size_t dlen)
 uint8_t bfcheck(uint8_t *d, size_t dlen)
 {
   uint8_t cnt = 0;
-  uint8_t r = 0;
+  uint8_t r = fnv_init();
   uint8_t bit;
   uint8_t byte;
   for(uint8_t i = 0; i < BF_ITER; i++)
   {
-    for(uint8_t j = dlen-1; j > 0; j--)
-      r = LFSR(r ^ d[i]);
-    r = r ^ d[0];
-    bit = r % FILTER_LENGTH_BITS;
+    for(uint8_t j = 0; j < dlen; j++) { r = fnv_add(r, d[j]); }
+    bit = fnv_finalize(r) % FILTER_LENGTH_BITS;
+
     byte = bit / 8;
     bit = bit % 8;
     cnt += (bfilter[byte] & (1 << bit)) ? 1 : 0;
@@ -130,7 +134,8 @@ int main()
 
   uint8_t device_cnt = sizeof(devices) / 5 / sizeof(uint8_t);
 
-  uint8_t start = 24, end = 29;
+  // Devices [start, end)
+  uint8_t start = 0, end = 11;
   for(uint8_t i = start; i < end; i++)
   {
     printf("Adding ");
@@ -139,6 +144,9 @@ int main()
     printf(" %s\n", bfcheck(devices[i], 5) ? "YES" : "NO");
   }
 
+  // Check the rest of all the devices and keep track of how many false
+  // positives. This includes abusing the fact that the DIDs are all in
+  // contiguous and that we can just shift over to the unaligned DIDs
   uint16_t cnt_pos = 0;
   uint16_t cnt = 0;
   uint8_t c = 0;
