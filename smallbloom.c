@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-uint8_t *filter;
+uint8_t *bfilter;
 
 
 /* RS Galois Field 
@@ -35,7 +35,7 @@ void bfadd(uint8_t *d, size_t dlen)
     //printf("%02x-%02x ", byte,bit);
     byte = bit / 8;
     bit = bit % 8;
-    filter[byte] |= (1 << bit);
+    bfilter[byte] |= (1 << bit);
   }
 }
 
@@ -52,7 +52,7 @@ uint8_t bfcheck(uint8_t *d, size_t dlen)
     bit = r % FILTER_LENGTH_BITS;
     byte = bit / 8;
     bit = bit % 8;
-    cnt += (filter[byte] & (1 << bit)) ? 1 : 0;
+    cnt += (bfilter[byte] & (1 << bit)) ? 1 : 0;
   }
 
   return cnt == BF_ITER;
@@ -103,7 +103,7 @@ int main()
     {0x60, 0xd3, 0xbf, 0x32, 0x5f},
     {0x80, 0xec, 0x79, 0x2f, 0x54},
   };
-  filter = (uint8_t *) malloc(FILTER_LENGTH_BYTES);
+  bfilter = (uint8_t *) malloc(FILTER_LENGTH_BYTES);
 
   uint8_t start = 16, end = 36;
   for(uint8_t i = start; i < end; i++)
