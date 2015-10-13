@@ -5,7 +5,7 @@
 uint8_t *bfilter;
 
 
-/* RS Galois Field 
+/* RS Galois Field
  * x^8 + x^4 + x^3 + x^2 + 1
  */
 #define LFSR(c) ((( (c) << 1) ^ (((c) & 0x80) ? 0x1d : 0)) % 256)
