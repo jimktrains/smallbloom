@@ -6,7 +6,7 @@ uint8_t *filter;
 
 
 /* RS Galois Field 
- * x^8 + x^4 + x^3 + x^2 + 1 mod 255
+ * x^8 + x^4 + x^3 + x^2 + 1
  */
 #define LFSR(c) ((( (c) << 1) ^ (((c) & 0x80) ? 0x1d : 0)) % 256)
 #define FILTER_LENGTH_BYTES 14
