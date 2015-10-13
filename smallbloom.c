@@ -29,8 +29,9 @@ void bfadd(uint8_t *d, size_t dlen)
   uint8_t byte;
   for(uint8_t i = 0; i < BF_ITER; i++)
   {
-    for(uint8_t j = 0; j < dlen; j++)
+    for(uint8_t j = dlen-1; j > 0; j--)
       r = LFSR(r ^ d[i]);
+    r = r ^ d[0];
     bit = r % FILTER_LENGTH_BITS;
     //printf("%02x-%02x ", byte,bit);
     byte = bit / 8;
@@ -47,8 +48,9 @@ uint8_t bfcheck(uint8_t *d, size_t dlen)
   uint8_t byte;
   for(uint8_t i = 0; i < BF_ITER; i++)
   {
-    for(uint8_t j = 0; j < dlen; j++)
+    for(uint8_t j = dlen-1; j > 0; j--)
       r = LFSR(r ^ d[i]);
+    r = r ^ d[0];
     bit = r % FILTER_LENGTH_BITS;
     byte = bit / 8;
     bit = bit % 8;
