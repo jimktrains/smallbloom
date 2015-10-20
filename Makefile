@@ -10,4 +10,4 @@ test:  libsmallbloom.o fnv.o smallbloom.c test_dids.h
 	cc ${CFLAGS} -o smallbloom $^
 	./smallbloom
 clean:
-	rm -f smallbloom *.o
+	rm -f smallbloom *.o *.ghc
